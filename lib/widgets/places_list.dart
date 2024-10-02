@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/models/place.dart';
+import 'package:meals_app/screens/place_details.dart';
 
 class PlaceList extends StatelessWidget {
   const PlaceList({super.key, required this.places});
@@ -12,7 +13,7 @@ class PlaceList extends StatelessWidget {
       return Center(
         child: Text(
           'No places added yet.',
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
         ),
@@ -27,6 +28,15 @@ class PlaceList extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
           ),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => PlaceDetailsScreen(
+                  place: places[index],
+                ),
+              ),
+            );
+          },
         );
       },
       itemCount: places.length,

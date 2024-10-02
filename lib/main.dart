@@ -38,7 +38,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Great Places',
-      theme: theme,
+      theme: theme.copyWith(
+        appBarTheme: ThemeData.light().appBarTheme.copyWith(
+              iconTheme: IconThemeData(
+                  color: Theme.of(context).colorScheme.onInverseSurface),
+            ),
+      ),
       home: const PlacesScreen(),
     );
   }

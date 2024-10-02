@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meals_app/providers/places_provider.dart';
 import 'package:meals_app/screens/add_place.dart';
 import 'package:meals_app/widgets/places_list.dart';
 
-class PlacesScreen extends StatelessWidget {
+class PlacesScreen extends ConsumerWidget {
   const PlacesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final placesList = ref.watch(placesProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -28,7 +31,7 @@ class PlacesScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: PlaceList(places: []),
+      body: PlaceList(places: placesList),
     );
   }
 }

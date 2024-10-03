@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ImageInput extends StatefulWidget {
   const ImageInput({super.key});
@@ -8,8 +11,55 @@ class ImageInput extends StatefulWidget {
 }
 
 class _ImageInputState extends State<ImageInput> {
+  File? selectedImage;
+  void _takeImage() async {
+    final ImagePicker picker = ImagePicker();
+    final pickedImage =
+        await picker.pickImage(source: ImageSource.camera, maxWidth: 600);
+    if (pickedImage == null) {
+      return;
+    }
+    setState(() {
+      selectedImage = File(pickedImage.path);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget content = TextButton.icon(
+      onPressed: _takeImage,
+      label: Text(
+        'Take Picture',
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+      ),
+      icon: Icon(
+        Icons.camera,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+      style: ButtonStyle(
+        side: WidgetStatePropertyAll(
+          BorderSide(color: Theme.of(context).colorScheme.onSurfaceVariant),
+        ), // Outline color
+        shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(8.0), // Adjust border radius as needed
+          ),
+        ),
+      ),
+    );
+
+    if (selectedImage != null) {
+      content = GestureDetector(
+        onTap: _takeImage,
+        child: Image.file(
+          selectedImage!,
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
     return Container(
       height: 250,
       width: double.infinity,
@@ -21,29 +71,7 @@ class _ImageInputState extends State<ImageInput> {
         ),
         borderRadius: BorderRadius.circular(6),
       ),
-      child: TextButton.icon(
-        onPressed: null,
-        label: Text(
-          'Take Picture',
-          style:
-              TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
-        ),
-        icon: Icon(
-          Icons.camera,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-        style: ButtonStyle(
-          side: WidgetStatePropertyAll(
-            BorderSide(color: Theme.of(context).colorScheme.onSurfaceVariant),
-          ), // Outline color
-          shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(8.0), // Adjust border radius as needed
-            ),
-          ),
-        ),
-      ),
+      child: content,
     );
   }
 }

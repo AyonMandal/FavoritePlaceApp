@@ -6,8 +6,9 @@ import 'package:meals_app/models/place.dart';
 class PlacesProviderNotifier extends StateNotifier<List<Place>> {
   PlacesProviderNotifier() : super(const []);
 
-  void addPlace(String title, File imageFile) {
-    final newPlace = Place(title: title, image: imageFile);
+  void addPlace(String title, File imageFile, PlaceLocationDetails location) {
+    final newPlace =
+        Place(title: title, image: imageFile, locationDetails: location);
     state = [...state, newPlace];
   }
 }

@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meals_app/models/place.dart';
 import 'package:meals_app/providers/places_provider.dart';
 import 'package:meals_app/widgets/image_input.dart';
+import 'package:meals_app/widgets/location_input.dart';
 
 class AddPlaceScreen extends ConsumerStatefulWidget {
   const AddPlaceScreen({super.key});
@@ -14,16 +16,17 @@ class AddPlaceScreen extends ConsumerStatefulWidget {
 
 class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   final _titleController = TextEditingController();
+  PlaceLocationDetails? locationDetails;
   File? selectedImage;
 
   void _onSave() {
-    if (_titleController.text.isEmpty) {
+    if (_titleController.text.isEmpty || locationDetails == null) {
       return;
     }
 
     ref
         .read(placesProvider.notifier)
-        .addPlace(_titleController.text, selectedImage!);
+        .addPlace(_titleController.text, selectedImage!, locationDetails!);
     Navigator.of(context).pop();
   }
 
@@ -61,6 +64,14 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
             ImageInput(
               onImageSelected: (image) {
                 selectedImage = image;
+              },
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            LocationInput(
+              onLocationSelect: (location) {
+                locationDetails = location;
               },
             ),
             const SizedBox(

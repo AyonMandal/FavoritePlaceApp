@@ -4,12 +4,26 @@ import 'package:meals_app/providers/places_provider.dart';
 import 'package:meals_app/screens/add_place.dart';
 import 'package:meals_app/widgets/places_list.dart';
 
-class PlacesScreen extends ConsumerWidget {
+class PlacesScreen extends ConsumerStatefulWidget {
   const PlacesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final placesList = ref.watch(placesProvider);
+  _PlacesScreenState createState() => _PlacesScreenState();
+}
+
+class _PlacesScreenState extends ConsumerState<PlacesScreen> {
+  late Future<void> _placesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _placesFuture = ref.read(placesProvider.notifier).getPlaces();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final placesList =
+        ref.watch(placesProvider); // Use ref to watch the provider
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -33,7 +47,13 @@ class PlacesScreen extends ConsumerWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: PlaceList(places: placesList),
+        child: FutureBuilder(
+          future: _placesFuture,
+          builder: (context, snapshot) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? const CircularProgressIndicator()
+                  : PlaceList(places: placesList),
+        ),
       ),
     );
   }

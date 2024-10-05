@@ -18,6 +18,9 @@ class Place {
   final PlaceLocationDetails locationDetails;
 
   Place(
-      {required this.title, required this.image, required this.locationDetails})
-      : id = const Uuid().v4();
+      {required this.title,
+      required this.image,
+      required this.locationDetails,
+      id})
+      : id = id ?? const Uuid().v4();
 }

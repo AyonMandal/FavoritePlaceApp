@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 import 'package:meals_app/models/place.dart';
+import 'package:meals_app/screens/map.dart';
 
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key, required this.onLocationSelect});
@@ -63,6 +65,10 @@ class _LocationInputState extends State<LocationInput> {
       return;
     }
 
+    getAddressFromLatLong(latitude, longitude);
+  }
+
+  Future<void> getAddressFromLatLong(double latitude, double longitude) async {
     final url = Uri.parse(
       'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyDKGjqFSpEAv-eZuYF4UMPOxWrXtgs-E9g',
     );
@@ -76,6 +82,17 @@ class _LocationInputState extends State<LocationInput> {
     });
 
     widget.onLocationSelect(locationDetails!);
+  }
+
+  void _openMapScreen() async {
+    final LatLng? locationData = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => MapScreen(),
+      ),
+    );
+
+    if (locationData == null) return;
+    getAddressFromLatLong(locationData.latitude, locationData.longitude);
   }
 
   @override
@@ -133,7 +150,7 @@ class _LocationInputState extends State<LocationInput> {
               ),
             ),
             TextButton.icon(
-              onPressed: null,
+              onPressed: _openMapScreen,
               label: Text(
                 'Select On Map',
                 style: TextStyle(
